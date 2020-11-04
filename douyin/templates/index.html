@@ -1,0 +1,50 @@
+<html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!-- 解决访问视频url 请求403异常 -->
+<meta name="referrer" content="no-referrer"/>
+<head>
+    <meta charset="UTF-8">
+    <title>抖音去水印</title>
+</head>
+
+<body>
+<div>
+    <label for="text">
+        <input type="text" id="text" placeholder="请输入抖音分享文字">
+    </label>
+    <button id="convert">获取无水印视频</button>
+</div>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<script>
+    $(function () {
+        $("#convert").click(function () {
+            var text = $("#text").val();
+            var data = {"text": text}
+            debugger;
+            $.ajax({
+                type: "post",
+                url: 'convert',
+                async: false, // 使用同步方式
+                // 1 需要使用JSON.stringify 否则格式为 a=2&b=3&now=14...
+                // 2 需要强制类型转换，否则格式为 {"a":"2","b":"3"}
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    console.log(res)
+                    if (res.status === "ok") {
+                        var video_url = res.data;
+                        window.location = video_url;
+                    } else {
+                        msg = res.msg;
+                        alert(msg);
+                    }
+                } // 注意不要在此行增加逗号
+            });
+        });
+    });
+</script>
+
+
+</html>
