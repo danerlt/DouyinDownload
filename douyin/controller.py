@@ -39,6 +39,7 @@ def get_video_url(long_url, ratio="1080p"):
     :return: 无水印视频链接
     :rtype:
     """
+    logger.info(f"get_video_url start, long_url: {long_url}")
     re_video_id = r"video/(\d+)/"
     search_obj = re.search(re_video_id, long_url)
     if search_obj:
@@ -46,6 +47,7 @@ def get_video_url(long_url, ratio="1080p"):
         # API 接口: "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=6890908972346395918"
         api = f"https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids={video_id}"
         res = requests.get(api, headers=headers).json()
+        logger.info(f"get_video_url res: {res}")
         item_list = res["item_list"]
         for item in item_list:
             video = item["video"]
@@ -53,7 +55,8 @@ def get_video_url(long_url, ratio="1080p"):
             uri = play_addr["uri"]
             video_url = f"https://aweme.snssdk.com/aweme/v1/play/?video_id={uri}&ratio={ratio}&line=0"
             real_video_url = get_redirect_url(video_url)
-            return real_video_url
+            logger.info(f"get_video_url result: {real_video_url}")
+            return video_url
     else:
         raise Exception(f"提取视频ID失败, url: {long_url}")
 
