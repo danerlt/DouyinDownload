@@ -22,8 +22,15 @@ def get_redirect_url(url):
 
     """
     try:
-        res = requests.get(url=url, headers=headers)
-        long_url = res.url
+        logger.info(f"get_redirect_url start, url: {url}")
+        res = requests.get(url=url, headers=headers, allow_redirects=False)
+        if res.status_code == 200:
+            long_url = res.url
+        elif res.status_code == 302:
+            long_url = res.headers["Location"]
+        else:
+            raise Exception(f"url:{url} 重定向失败")
+        logger.info(f"get_redirect_url result: {long_url}")
         return long_url
     except Exception as e:
         msg = f"获取重定向URL失败,url: {url}, error:%s " % str(e)
@@ -54,9 +61,10 @@ def get_video_url(long_url, ratio="1080p"):
             play_addr = video["play_addr"]
             uri = play_addr["uri"]
             video_url = f"https://aweme.snssdk.com/aweme/v1/play/?video_id={uri}&ratio={ratio}&line=0"
+            logger.info(f"video_url: {video_url}")
             real_video_url = get_redirect_url(video_url)
             logger.info(f"get_video_url result: {real_video_url}")
-            return video_url
+            return real_video_url
     else:
         raise Exception(f"提取视频ID失败, url: {long_url}")
 

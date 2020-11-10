@@ -37,7 +37,7 @@
     <textarea type="text" id="text" class="text" rows="4" cols="50" placeholder="请输入抖音分享文字">
         </textarea>
     <div class="btn">
-        <button id="convert">预览</button>
+        <button id="show">预览</button>
         <button id="download">下载</button>
     </div>
 
@@ -58,6 +58,7 @@
             $.ajax({
                 type: "post",
                 url: '/convert',
+                async: false,
                 // 1 需要使用JSON.stringify 否则格式为 a=2&b=3&now=14...
                 // 2 需要强制类型转换，否则格式为 {"a":"2","b":"3"}
                 data: JSON.stringify(data),
@@ -105,13 +106,9 @@
             })
         }
 
-        $("#convert").click(function () {
-            if (video_url) {
-                show();
-            } else {
-                get_video_url();
-                show();
-            }
+        $("#show").click(function () {
+            get_video_url();
+            show();
         });
 
         $("#download").click(function () {
